@@ -25,7 +25,8 @@ int main() {
     fout.open("data.txt");
 
     for (int count = 0; count < 100; count++) {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::chrono::time_point base_time = std::chrono::high_resolution_clock::now();
+        // std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Polls data from IMU
         if (imu->poll(mdp) != spartan::RESULT_SUCCESS) {
@@ -35,9 +36,13 @@ int main() {
         imuPacket->populate(mdp);
         std::cout << "Packet size " << imuPacket->getSize() << std::endl;
 
-        fout << *imuPacket;
-        std::cout << *imuPacket << std::endl;
-        std::cout << "DIVIDER" << std::endl;
+        // fout << *imuPacket;
+        // std::cout << *imuPacket << std::endl;
+        // std::cout << "DIVIDER" << std::endl;
+
+        std::chrono::time_point now = std::chrono::high_resolution_clock::now();
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(now - base_time).count()
+            << "ns" << std::endl;
     }
     fout.close();
 }
